@@ -18,5 +18,6 @@ void ledControl_init(void);
 void ledControl_on(void);
 void ledControl_off(void);
 void ledControl_toggle(void);
+void ledControl_task(void *argument);
 
 #endif // LED_CONTROL_H

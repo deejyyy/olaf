@@ -1,18 +1,22 @@
-/*******************************************************************************
-* LED Control Source File
-* Copyright (c) 2026 Deej. All rights reserved.
-*******************************************************************************/
+/*******************************************************************
+* FreeRTOS Application
+* Copyright (c) 2026 Henny Penny. All rights reserved.
+*******************************************************************/
 
 /*******************************************************************************
  * Includes                                                                    *
  ******************************************************************************/
-#include <stdint.h>
+/* System Includes */
 
 /* Project Includes */
+#include "freertos.h"
 #include "led_control.h"
 
 /* Hardware Includes */
-#include "stm32g0xx_hal.h"
+#include "FreeRTOS.h"
+#include "FreeRTOSConfig.h"
+#include "bsp_hal_config_gpio.h"
+#include "task.h"
 #include "cmsis_os2.h"
 
 /*******************************************************************************
@@ -22,6 +26,15 @@
 /*******************************************************************************
  * Private Variables                                                           *
  ******************************************************************************/
+osThreadId_t ledControlTaskHandle;
+
+const osThreadAttr_t ledControlTask_attributes = {
+    .name = "ledControlTask",
+    .stack_size = STACK_SIZE_TASK_DEFAULT,
+    .priority = (osPriority_t)PRIORITY_TASK_NORMAL,
+};
+
+uint32_t ledTime_ms = 1000;
 
 /*******************************************************************************
  * Private Function Declaration                                                *
@@ -34,33 +47,6 @@
 /*******************************************************************************
  * Public Function Definition                                                  *
  ******************************************************************************/
-
-void ledControl_init(void)
-{
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-}
-
-void ledControl_on(void)
-{
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-}
-
-void ledControl_off(void)
-{
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-}
-
-void ledControl_toggle(void)
-{
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-}
-
-void ledControl_task(void *argument)
-{
-	uint32_t ledTime_ms = *((uint32_t *)argument);
-	while ( 1 )
-	{
-		ledControl_toggle();
-		osDelay(ledTime_ms);
-	}
+void freertos_init(void) {
+    ledControlTaskHandle = osThreadNew(ledControl_task, &ledTime_ms, &ledControlTask_attributes);
 }
