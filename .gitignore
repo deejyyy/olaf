@@ -1,0 +1,8 @@
+# Build artifacts
+build/
+
+# IDE and editor files
+.vscode/
+
+# Submodules
+lib/stm32cubeg0/

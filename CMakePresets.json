@@ -1,0 +1,38 @@
+{
+ "version": 6,
+ "cmakeMinimumRequired": {
+   "major": 3,
+   "minor": 23,
+   "patch": 0
+ },
+ "configurePresets": [
+   {
+        "name": "default",
+        "displayName": "Default Config",
+        "description": "Default build using Ninja generator",
+        "binaryDir": "${sourceDir}/build/${presetName}",
+        "toolchainFile": "${sourceDir}/cmake/toolchain/arm_gcc_toolchain.cmake",
+        "cacheVariables": {
+            "LINKER_SCRIPT": "${sourceDir}/board/linker/STM32G0B1RETX_FLASH.ld",
+            "CFG_BUILD_TYPE": "DEBUG_ENABLED"
+        }
+   },
+   {
+       "name": "olaf_app",
+       "inherits": ["default"],
+       "cacheVariables": {
+           "CFG_BUILD_TYPE": "DEBUG_DISABLED"
+       }
+   }
+ ],
+ "buildPresets": [
+   {
+     "name": "default",
+     "configurePreset": "default"
+   },
+   {
+      "name": "olaf_app",
+      "configurePreset": "olaf_app"
+   }
+ ]
+}
