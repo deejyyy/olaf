@@ -13,14 +13,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(${PROJECT_NAME} "source/main.c")
 
-if(CFG_BUILD_TYPE STREQUAL "DEBUG_ENABLED")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_ENABLED)
-    message(STATUS "Debugging enabled")
-elseif(CFG_BUILD_TYPE STREQUAL "DEBUG_DISABLED")
-    message(STATUS "Debugging disabled")
-else()
-    message(FATAL_ERROR "Unknown build type: ${CFG_BUILD_TYPE}. Use DEBUG_ENABLED or DEBUG_DISABLED.")
-endif()
+# if(CFG_BUILD_TYPE STREQUAL "DEBUG_ENABLED")
+#     target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_ENABLED)
+#     message(STATUS "Debugging enabled")
+# elseif(CFG_BUILD_TYPE STREQUAL "DEBUG_DISABLED")
+#     message(STATUS "Debugging disabled")
+# else()
+#     message(FATAL_ERROR "Unknown build type: ${CFG_BUILD_TYPE}. Use DEBUG_ENABLED or DEBUG_DISABLED.")
+# endif()
 
 set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/build/custom_deps")
 

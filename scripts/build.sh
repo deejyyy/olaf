@@ -80,8 +80,8 @@ build_artifacts="${build_artifacts:-true}"
 test_artifacts="${test_artifacts:-true}"
 
 # Define cmake build and test presets
-cmake_build_preset="olaf-${cmake_preset}-app"
-cmake_test_preset="olaf-${cmake_preset}-test"
+cmake_build_preset="olaf-app"
+cmake_test_preset="olaf-test"
 
 
 # Change directory to the root of the current repository

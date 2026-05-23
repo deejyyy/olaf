@@ -24,7 +24,6 @@
 # Set script to exit on any errors
 set -e
 
-
 # Source the environment to enable the toolchain
 export PATH="${TOOLCHAIN_SOURCE_PATH}:$PATH"
 
