@@ -22,6 +22,8 @@
 #include "bsp_hal_config_gpio.h"
 #include "bsp_hal_config_tim.h"
 #include "led_control.h"
+#include "cmsis_os2.h"
+#include "freertos.h"
 
 /* Private includes ----------------------------------------------------------*/
 
