@@ -33,7 +33,7 @@
 
 
 /* Private macro -------------------------------------------------------------*/
-
+#define BUTTON_POSITION_INVALID 0xFF
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -52,7 +52,7 @@ static int8_t map_pin_to_index( uint16_t gpioPin );
 /******************************************************************************/
 static int8_t map_pin_to_index( uint16_t gpioPin )
 {
-    uint8_t pos = 0;
+    int8_t pos = -1;
 
     while( pos < BSP_HAL_CONFIG_GPIO_MAX )
     {
@@ -64,13 +64,14 @@ static int8_t map_pin_to_index( uint16_t gpioPin )
         pos++;
     }
 
-    return -1;
+    return pos;
 }
 
 void HAL_GPIO_EXTI_Callback( uint16_t gpioPin )
 {
-    uint8_t pos = map_pin_to_index(gpioPin);
-    if( pos >= 0 ) {
+    int8_t pos = map_pin_to_index(gpioPin);
+    if( pos < BSP_HAL_CONFIG_GPIO_MAX )
+    {
         exti_callback_list[pos]();
     }
 }
@@ -80,8 +81,8 @@ void EXTI_RegisterCallback( uint16_t gpioPin, tInterruptCb callback )
 {
     if( NULL != callback )
     {
-        uint8_t pos = map_pin_to_index( gpioPin );
-        if (pos >= 0) {
+        int8_t pos = map_pin_to_index( gpioPin );
+        if (pos < BSP_HAL_CONFIG_GPIO_MAX ) {
             exti_callback_list[pos] = callback;
         }
     }
