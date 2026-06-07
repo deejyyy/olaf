@@ -6,3 +6,6 @@ build/
 
 # Submodules
 lib/stm32cubeg0/
+
+# Patch
+*.patch

@@ -19,11 +19,13 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+
 #include "main.h"
+#include "bsp_hal_config_gpio.h"
 #include "stm32g0xx_it.h"
 
 /* Private includes ----------------------------------------------------------*/
-
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -37,49 +39,58 @@
 
 
 /* Private function prototypes -----------------------------------------------*/
-
+void EXTI_RegisterCallback( uint16_t gpioPin, tInterruptCb callback );
+static tInterruptCb exti_callback_list[BSP_HAL_CONFIG_GPIO_MAX] = { 0 };
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim6;
+static int8_t map_pin_to_index( uint16_t gpioPin );
 
 
 /******************************************************************************/
 /*           Cortex-M0+ Processor Interruption and Exception Handlers          */
 /******************************************************************************/
-/**
-  * @brief This function handles Non maskable interrupt.
-  */
-void NMI_Handler(void)
+static int8_t map_pin_to_index( uint16_t gpioPin )
 {
+    uint8_t pos = 0;
 
+    while( pos < BSP_HAL_CONFIG_GPIO_MAX )
+    {
+        if( ( gpioPin >> pos ) & 1 )
+        {
+            return pos;
+        }
+
+        pos++;
+    }
+
+    return -1;
 }
 
-/**
-  * @brief This function handles Hard fault interrupt.
-  */
-void HardFault_Handler(void)
+void HAL_GPIO_EXTI_Callback( uint16_t gpioPin )
 {
-  while (1)
-  {
-  }
+    uint8_t pos = map_pin_to_index(gpioPin);
+    if( pos >= 0 ) {
+        exti_callback_list[pos]();
+    }
 }
 
-// /**
-//   * @brief This function handles System tick timer.
-//   */
-// void SysTick_Handler(void)
-// {
-//     HAL_IncTick();
-// }
 
-/**
-  * @brief This function handles TIM6 global interrupt.
-  */
-void TIM6_DAC_LPTIM1_IRQHandler(void)
+void EXTI_RegisterCallback( uint16_t gpioPin, tInterruptCb callback )
 {
-    HAL_TIM_IRQHandler(&htim6);
+    if( NULL != callback )
+    {
+        uint8_t pos = map_pin_to_index( gpioPin );
+        if (pos >= 0) {
+            exti_callback_list[pos] = callback;
+        }
+    }
 }
 
+void EXTI0_1_IRQHandler(void)
+{
+    HAL_GPIO_EXTI_IRQHandler( BSP_HAL_CONFIG_GPIO_PIN_BUTTON );
+}
 
 /******************************************************************************/
 /* STM32G0xx Peripheral Interrupt Handlers                                    */
@@ -88,4 +99,10 @@ void TIM6_DAC_LPTIM1_IRQHandler(void)
 /* please refer to the startup file (startup_stm32g0xx.s).                    */
 /******************************************************************************/
 
-
+/**
+  * @brief This function handles TIM6 global interrupt.
+  */
+void TIM6_DAC_LPTIM1_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler( &htim6 );
+}

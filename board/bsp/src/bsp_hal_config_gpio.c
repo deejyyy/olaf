@@ -19,38 +19,68 @@
 /*******************************************************************************
  * Private Variables                                                           *
  ******************************************************************************/
+typedef struct
+{
+    GPIO_TypeDef *port;
+    GPIO_InitTypeDef config;
+} tGpioConfig;
+
+/*******************************************************************************
+ * Private Types                                                               *
+ ******************************************************************************/
+
+tGpioConfig gpio_configs[BSP_HAL_CONFIG_GPIO_MAX] = {
+    [BSP_HAL_CONFIG_GPIO_LED] = {
+        .port = BSP_HAL_CONFIG_GPIO_PORT_LED,
+        .config =
+        {
+            .Pin = BSP_HAL_CONFIG_GPIO_PIN_LED,
+            .Mode = GPIO_MODE_OUTPUT_PP,
+            .Pull = GPIO_PULLUP,
+            .Speed = GPIO_SPEED_FREQ_HIGH,
+        },
+    },
+    [BSP_HAL_CONFIG_GPIO_BUTTON] = {
+        .port = BSP_HAL_CONFIG_GPIO_PORT_BUTTON,
+        .config =
+        {
+            .Pin = BSP_HAL_CONFIG_GPIO_PIN_BUTTON,
+            .Mode = GPIO_MODE_INPUT,
+            .Pull = GPIO_NOPULL,
+            .Speed = GPIO_SPEED_FREQ_LOW,
+        },
+    },
+};
 
 /*******************************************************************************
  * Private Function Declaration                                                *
  ******************************************************************************/
+static void configureGpio( void );
 
 /*******************************************************************************
  * Private Function Definition                                                 *
  ******************************************************************************/
+static void configureGpio( void )
+{
+    /* Enable the GPIO Clock */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+
+    // /* -2- Configure IO in output push-pull mode to drive external LEDs */
+    for( eGpioIds id = 0; id < BSP_HAL_CONFIG_GPIO_MAX; id++)
+    {
+        HAL_GPIO_Init(gpio_configs[id].port, &gpio_configs[id].config);
+    }
+
+    // Enable and set EXTI line 0 Interrupt to the lowest priority
+    HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+}
 
 /*******************************************************************************
  * Public Function Definition                                                  *
  ******************************************************************************/
-
-GPIO_InitTypeDef gpio_init = {
-    .Pin = GPIO_PIN_5,
-    .Mode = GPIO_MODE_OUTPUT_PP,
-    .Pull = GPIO_PULLUP,
-    .Speed = GPIO_SPEED_FREQ_HIGH,
-};
-
 void bspHalConfigGpio_init( void )
 {
-    /* Enable the GPIO Clock */
-    /* -1- Enable GPIO Clock (to be able to program the configuration registers) */
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    // GPIO_InitStruct.Pin = GPIO_PIN_5;
-    // GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    // GPIO_InitStruct.Pull  = GPIO_PULLUP;
-    // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    // HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    // /* -2- Configure IO in output push-pull mode to drive external LEDs */
-    HAL_GPIO_Init(GPIOA, &gpio_init);
+    configureGpio();
 }
-

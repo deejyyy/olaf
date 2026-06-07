@@ -12,8 +12,9 @@
 
 #include "stm32g0xx_hal.h"
 
-// Update these for your board if LED is on a different GPIO.
-
+/*******************************************************************************
+ * Public Function Declaration                                                 *
+ ******************************************************************************/
 void ledControl_init(void);
 void ledControl_on(void);
 void ledControl_off(void);

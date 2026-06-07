@@ -34,33 +34,32 @@
 /*******************************************************************************
  * Public Function Definition                                                  *
  ******************************************************************************/
-
-void ledControl_init(void)
+void ledControl_init( void )
 {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin( GPIOA, GPIO_PIN_5, GPIO_PIN_RESET );
 }
 
-void ledControl_on(void)
+void ledControl_on( void )
 {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	HAL_GPIO_WritePin( GPIOA, GPIO_PIN_5, GPIO_PIN_SET );
 }
 
-void ledControl_off(void)
+void ledControl_off( void )
 {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin( GPIOA, GPIO_PIN_5, GPIO_PIN_RESET );
 }
 
-void ledControl_toggle(void)
+void ledControl_toggle( void )
 {
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	HAL_GPIO_TogglePin( GPIOA, GPIO_PIN_5 );
 }
 
-void ledControl_task(void *argument)
+void ledControl_task( void *argument )
 {
 	uint32_t ledTime_ms = *((uint32_t *)argument);
 	while ( 1 )
 	{
 		ledControl_toggle();
-		osDelay(ledTime_ms);
+		osDelay( ledTime_ms );
 	}
 }
