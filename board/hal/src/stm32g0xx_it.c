@@ -34,13 +34,14 @@
 
 /* Private macro -------------------------------------------------------------*/
 #define BUTTON_POSITION_INVALID 0xFF
+#define MAX_GPIO_NUM 16
 
 /* Private variables ---------------------------------------------------------*/
 
 
 /* Private function prototypes -----------------------------------------------*/
 void EXTI_RegisterCallback( uint16_t gpioPin, tInterruptCb callback );
-static tInterruptCb exti_callback_list[BSP_HAL_CONFIG_GPIO_MAX] = { 0 };
+static tInterruptCb exti_callback_list[MAX_GPIO_NUM] = { 0 };
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim6;
@@ -54,7 +55,7 @@ static int8_t map_pin_to_index( uint16_t gpioPin )
 {
     int8_t pos = -1;
 
-    while( pos < BSP_HAL_CONFIG_GPIO_MAX )
+    while( pos < MAX_GPIO_NUM )
     {
         if( ( gpioPin >> pos ) & 1 )
         {
@@ -67,28 +68,39 @@ static int8_t map_pin_to_index( uint16_t gpioPin )
     return pos;
 }
 
-void HAL_GPIO_EXTI_Callback( uint16_t gpioPin )
+void HAL_GPIO_EXTI_Rising_Callback( uint16_t gpioPin )
 {
-    int8_t pos = map_pin_to_index(gpioPin);
-    if( pos < BSP_HAL_CONFIG_GPIO_MAX )
+    int8_t pos = map_pin_to_index( gpioPin );
+
+    if( pos < MAX_GPIO_NUM )
     {
         exti_callback_list[pos]();
     }
 }
 
+void HAL_GPIO_EXTI_Falling_Callback( uint16_t gpioPin )
+{
+    int8_t pos = map_pin_to_index( gpioPin );
+
+    if( pos < MAX_GPIO_NUM )
+    {
+        exti_callback_list[pos]();
+    }
+}
 
 void EXTI_RegisterCallback( uint16_t gpioPin, tInterruptCb callback )
 {
     if( NULL != callback )
     {
         int8_t pos = map_pin_to_index( gpioPin );
-        if (pos < BSP_HAL_CONFIG_GPIO_MAX ) {
+        if ( pos < MAX_GPIO_NUM )
+        {
             exti_callback_list[pos] = callback;
         }
     }
 }
 
-void EXTI0_1_IRQHandler(void)
+void EXTI4_15_IRQHandler(void)
 {
     HAL_GPIO_EXTI_IRQHandler( BSP_HAL_CONFIG_GPIO_PIN_BUTTON );
 }

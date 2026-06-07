@@ -45,8 +45,8 @@ tGpioConfig gpio_configs[BSP_HAL_CONFIG_GPIO_MAX] = {
         .config =
         {
             .Pin = BSP_HAL_CONFIG_GPIO_PIN_BUTTON,
-            .Mode = GPIO_MODE_INPUT,
-            .Pull = GPIO_NOPULL,
+            .Mode = GPIO_MODE_IT_RISING,
+            .Pull = GPIO_PULLDOWN,
             .Speed = GPIO_SPEED_FREQ_LOW,
         },
     },
@@ -72,9 +72,9 @@ static void configureGpio( void )
         HAL_GPIO_Init(gpio_configs[id].port, &gpio_configs[id].config);
     }
 
-    // Enable and set EXTI line 0 Interrupt to the lowest priority
-    HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+    // Enable and set EXTI line 4_15 Interrupt
+    HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
 }
 
 /*******************************************************************************
