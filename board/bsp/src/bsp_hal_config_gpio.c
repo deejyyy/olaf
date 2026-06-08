@@ -45,9 +45,8 @@ tGpioConfig gpio_configs[BSP_HAL_CONFIG_GPIO_MAX] = {
         .config =
         {
             .Pin = BSP_HAL_CONFIG_GPIO_PIN_BUTTON,
-            .Mode = GPIO_MODE_IT_RISING,
-            .Pull = GPIO_PULLDOWN,
-            .Speed = GPIO_SPEED_FREQ_LOW,
+            .Mode = GPIO_MODE_INPUT,
+            .Pull = GPIO_PULLUP,
         },
     },
 };

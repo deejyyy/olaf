@@ -7,6 +7,7 @@
  * Includes                                                                    *
  ******************************************************************************/
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Project Includes */
 #include "button_control.h"
@@ -28,7 +29,7 @@
 /*******************************************************************************
  * Private Function Declaration                                                *
  ******************************************************************************/
-static void buttonInterruptHandler( void );
+static void buttonInterruptHandler( tButtonPressType pressType );
 static void configureButton( void );
 
 /*******************************************************************************
@@ -45,20 +46,54 @@ static void configureButton( void )
     }
 }
 
-static void buttonInterruptHandler( void )
+static void buttonInterruptHandler( tButtonPressType pressType )
 {
-    // Handle button press event here
-    ledControl_toggle();
+    // Do nothing
+    switch ( pressType )
+    {
+        case BUTTON_PRESS_TYPE_SHORT:
+        {
+            ledControl_toggle();
+            osDelay( 1000 );
+            ledControl_toggle();
+            osDelay( 1000 );
+            ledControl_toggle();
+        }
+        break;
+        case BUTTON_PRESS_TYPE_LONG:
+        {
+            // Do nothing for now
+            ledControl_toggle();
+            osDelay( 500 );
+            ledControl_toggle();
+            osDelay( 500 );
+            ledControl_toggle();
+            osDelay( 500 );
+            ledControl_toggle();
+            osDelay( 500 );
+        }
+        break;
+        default:
+        {
+            // Invalid press type, ignore
+        }
+        break;
+    }
 }
 /*******************************************************************************
  * Public Function Definition                                                  *
  ******************************************************************************/
 void buttonControl_task( void *pArgument )
 {
-    // ledControl_init();
     configureButton();
     while ( 1 )
     {
-        osDelay( 100 );
+        osDelay( 10 );
+        // if ( g_button_pressed )
+        // {
+        //     ledControl_toggle();
+        //     g_button_pressed = false;
+        // }
     }
+
 }

@@ -73,7 +73,7 @@ int main(void)
     SystemClock_Config();
     /* Initialize all configured peripherals */
     bspHalConfigGpio_init();
-    __enable_irq();
+    // __enable_irq();
     osKernelInitialize();
     freertos_init();
     osKernelStart();
